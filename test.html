@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>เครื่องคำนวณขนาดยา</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            background-color: #f9f9f9;
+        }
+        h1 {
+            text-align: center;
+        }
+        label {
+            font-size: 18px;
+            display: block;
+            margin: 10px 0 5px;
+        }
+        select, input {
+            padding: 8px;
+            width: 100%;
+            font-size: 16px;
+            margin-bottom: 20px;
+        }
+        button {
+            padding: 10px 15px;
+            font-size: 16px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .result {
+            margin-top: 20px;
+            font-size: 18px;
+            font-weight: bold;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>เครื่องคำนวณขนาดยา</h1>
+    
+    <!-- Combo box สำหรับเลือกยา -->
+    <label for="medicine">เลือกยา:</label>
+    <select id="medicine">
+        <option value="paracetamol">Paracetamol 120mg/5mL</option>
+        <option value="cpm">CPM 2mg/5mL</option>
+    </select>
+    
+    <!-- ช่องกรอกน้ำหนัก -->
+    <label for="weight">น้ำหนัก (kg):</label>
+    <input type="number" id="weight" placeholder="กรอกน้ำหนักของคุณ" required>
+    
+    <!-- ปุ่มคำนวณ -->
+    <button onclick="calculateDosage()">คำนวณ</button>
+    
+    <!-- ผลลัพธ์ -->
+    <div class="result" id="result"></div>
+</div>
+
+<script>
+    // ฟังก์ชันคำนวณขนาดยา
+    function calculateDosage() {
+        // ดึงค่าจาก input
+        const medicine = document.getElementById('medicine').value;
+        const weight = parseFloat(document.getElementById('weight').value);
+        
+        // ตรวจสอบน้ำหนัก
+        if (isNaN(weight) || weight <= 0) {
+            alert("กรุณากรอกน้ำหนักให้ถูกต้อง");
+            return;
+        }
+        
+        let minDose, maxDose;
+        
+        // คำนวณตามยา
+        if (medicine === 'paracetamol') {
+            // สูตรสำหรับ Paracetamol 120mg/5mL
+            minDose = (10 * weight) / 24; // ขนาดยาต่ำสุด
+            maxDose = (15 * weight) / 24; // ขนาดยาสูงสุด
+        } else if (medicine === 'cpm') {
+            // สูตรสำหรับ CPM 2mg/5mL
+            minDose = (0.116667 * weight) / 2.5; // ขนาดยาต่ำสุด
+            maxDose = (0.116667 * weight) / 2.5; // ขนาดยาสูงสุด
+        }
+
+        // แสดงผลลัพธ์
+        document.getElementById('result').innerHTML = `
+            ขนาดยาต่ำสุด: ${minDose.toFixed(2)} mL/dose <br>
+            ขนาดยาสูงสุด: ${maxDose.toFixed(2)} mL/dose
+        `;
+    }
+</script>
+
+</body>
+</html>
