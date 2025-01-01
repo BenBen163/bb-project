@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Antidote</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background-color: #f4f7fc;
+            color: #333;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 30px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            background-color: #ffffff;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            text-align: center;
+            font-size: 28px;
+            margin-bottom: 20px;
+            color: #4CAF50;
+        }
+        label {
+            font-size: 18px;
+            margin-bottom: 8px;
+            display: block;
+            color: #333;
+        }
+        select, input {
+            padding: 10px;
+            width: 100%;
+            font-size: 16px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        select:focus, input:focus {
+            border-color: #4CAF50;
+            outline: none;
+        }
+        button {
+            padding: 12px 20px;
+            font-size: 16px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            display: block;
+            width: 100%;
+            transition: background-color 0.3s ease;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .result {
+            margin-top: 30px;
+            font-size: 18px;
+            font-weight: bold;
+            color: #333;
+            background-color: #f1f8e9;
+            padding: 15px;
+            border-radius: 5px;
+            text-align: center;
+        }
+
+        /* เพิ่มการจัดสไตล์สำหรับแท็บ */
+        .tabs {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+        .tabs a {
+            padding: 12px 20px;
+            text-decoration: none;
+            color: #333;
+            font-size: 18px;
+            margin: 0 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            background-color: #fff;
+            transition: background-color 0.3s;
+        }
+        .tabs a:hover {
+            background-color: #4CAF50;
+            color: white;
+        }
+        .tabs a.active {
+            background-color: #4CAF50;
+            color: white;
+            border-color: #4CAF50;
+        }
+    </style>
+</head>
+<body>
+
+<!-- แถบแท็บ -->
+<div class="tabs">
+    <a href="ped_cal.html">โปรแกรมคำนวณขนาดยา</a>
+    <a href="inj_cal.html">โปรแกรมคำนวณยาฉีด</a>
+    <a href="antidote.html" class="active">Antidote</a>
+</div>
+
+<div class="container">
+    <h1>Antidote คำนวณขนาดยา</h1>
+    
+    <!-- Combo box สำหรับเลือก Antidote -->
+    <label for="antidote">เลือก Antidote:</label>
+    <select id="antidote">
+        <option value="acetylcysteine">Acetylcysteine</option>
+        <option value="flumazenil">Flumazenil</option>
+        <option value="naloxone">Naloxone</option>
+        <option value="digoxin">Digoxin</option>
+    </select>
+
+    <!-- ช่องกรอกน้ำหนัก -->
+    <label for="weight">น้ำหนัก (kg):</label>
+    <input type="number" id="weight" placeholder="กรอกน้ำหนักของผู้ป่วย" required>
+
+    <!-- ปุ่มคำนวณ -->
+    <button onclick="calculateAntidote()">คำนวณ</button>
+    
+    <!-- ผลลัพธ์ -->
+    <div class="result" id="result"></div>
+</div>
+
+<script>
+    // ฟังก์ชันคำนวณขนาดยา Antidote
+    function calculateAntidote() {
+        // ดึงค่าจาก input
+        const antidote = document.getElementById('antidote').value;
+        const weight = parseFloat(document.getElementById('weight').value);
+        
+        // ตรวจสอบน้ำหนัก
+        if (isNaN(weight) || weight <= 0) {
+            alert("กรุณากรอกน้ำหนักให้ถูกต้อง");
+            return;
+        }
+
+
+        let resultText = '';
+
+        if (antidote === 'acetylcysteine') {
+
+       	// จำกัดน้ำหนักผู้ป่วยสูงสุดที่ 110 กิโลกรัม
+        const weightToUse = weight > 110 ? 110 : weight;
+            // คำนวณสำหรับ Oral
+            const initialDoseOral = 140 * weightToUse; // ขนาดเริ่มต้น
+            const subsequentDoseOral = 70 * weightToUse; // ขนาดต่อเนื่อง
+	        const  useinitialDoseOral = initialDoseOral/100; //จำนวนซองเริ่มต้น
+	        const  usesubsequentDoseOral = subsequentDoseOral/100; //จำนวนซองต่อเนื่อง
+
+            // คำนวณสำหรับ IV
+            let ivDose = '';
+            if (weightToUse >= 40) {
+                // ผู้ใหญ่หรือเด็กน้ำหนัก ≥ 40 kg
+                const dose1IV = 150 * weightToUse; // ครั้งที่ 1
+                const dose2IV = 50 * weightToUse;  // ครั้งที่ 2
+                const dose3IV = 100 * weightToUse; // ครั้งที่ 3
+                ivDose = `
+                    ขนาดยาครั้งที่ 1 (IV): ${dose1IV} mg ใน 200 mL Dextrose (1 ชั่วโมง)<br>
+                    ขนาดยาครั้งที่ 2 (IV): ${dose2IV} mg ใน 500 mL Dextrose (4 ชั่วโมง)<br>
+                    ขนาดยาครั้งที่ 3 (IV): ${dose3IV} mg ใน 1000 mL Dextrose (16 ชั่วโมง)
+                `;
+            } else {
+                // เด็กน้ำหนัก < 40 kg
+                const dose1IV = 150 * weightToUse; // ครั้งที่ 1
+                const dose2IV = 50 * weightToUse;  // ครั้งที่ 2
+                const dose3IV = 100 * weightToUse; // ครั้งที่ 3
+                ivDose = `
+                    ขนาดยาครั้งที่ 1 (IV): ${dose1IV} mg ใน 100 mL Dextrose (30 นาที)<br>
+                    ขนาดยาครั้งที่ 2 (IV): ${dose2IV} mg ใน 250 mL Dextrose (4 ชั่วโมง)<br>
+                    ขนาดยาครั้งที่ 3 (IV): ${dose3IV} mg ใน 500 mL Dextrose (16 ชั่วโมง)
+                `;
+            }
+
+            // รวมผลลัพธ์
+            resultText = `
+		รูปแบบยากิน<br>
+                ขนาดยาเริ่มต้น (Oral): ${initialDoseOral} mg จำนวน ${useinitialDoseOral} ซอง (100mg/ซอง)<br>
+                ขนาดยาต่อเนื่อง (Oral): ${subsequentDoseOral} mg ทุก 4 ชั่วโมง จำนวน ${usesubsequentDoseOral} ซอง(100mg/ซอง)<br>
+                จำนวนครั้งในการให้ยาต่อเนื่อง (Oral): 17 ครั้ง<br>
+                คำแนะนำ (Oral): หากผู้ป่วยอาเจียนภายในหนึ่งชั่วโมงหลังจากการบริหารยา, ควรบริหารยาใหม่<br><br>
+		รูปแบบยาฉีด<br>
+                ${ivDose}
+            `;
+        }
+
+        // แสดงผลลัพธ์
+        document.getElementById('result').innerHTML = resultText;
+    }
+</script>
+
+</body>
+</html>

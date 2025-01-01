@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>โปรแกรมคำนวณยาฉีด</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background-color: #f4f7fc;
+            color: #333;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 30px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            background-color: #ffffff;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            text-align: center;
+            font-size: 28px;
+            margin-bottom: 20px;
+            color: #4CAF50;
+        }
+        label {
+            font-size: 18px;
+            margin-bottom: 8px;
+            display: block;
+            color: #333;
+        }
+        select, input {
+            padding: 12px;
+            width: 100%;
+            font-size: 16px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        select:focus, input:focus {
+            border-color: #4CAF50;
+            outline: none;
+        }
+        button {
+            padding: 12px 20px;
+            font-size: 16px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            display: block;
+            width: 100%;
+            transition: background-color 0.3s ease;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .result {
+            margin-top: 30px;
+            font-size: 18px;
+            font-weight: bold;
+            color: #333;
+            background-color: #f1f8e9;
+            padding: 15px;
+            border-radius: 5px;
+            text-align: center;
+        }
+
+        /* เพิ่มการจัดสไตล์สำหรับแท็บ */
+        .tabs {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+        .tabs a {
+            padding: 12px 20px;
+            text-decoration: none;
+            color: #333;
+            font-size: 18px;
+            margin: 0 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            background-color: #fff;
+            transition: background-color 0.3s;
+        }
+        .tabs a:hover {
+            background-color: #4CAF50;
+            color: white;
+        }
+        .tabs a.active {
+            background-color: #4CAF50;
+            color: white;
+            border-color: #4CAF50;
+        }
+    </style>
+</head>
+<body>
+
+<!-- แถบแท็บ -->
+<div class="tabs">
+    <a href="ped_cal.html">โปรแกรมคำนวณขนาดยา</a>
+    <a href="inj_cal.html" class="active">โปรแกรมคำนวณยาฉีด</a>
+    <a href="antidote.html">Antidote</a>
+</div>
+
+<div class="container">
+    <h1>โปรแกรมคำนวณยาฉีด</h1>
+    
+    <!-- Combo box สำหรับเลือกยาฉีด -->
+    <label for="injectionMedicine">เลือกยาฉีด:</label>
+    <select id="injectionMedicine">
+        <option value="penicillin">Penicillin G 10,000,000 IU</option>
+        <option value="insulin">Insulin regular 100 U/mL</option>
+        <option value="adrenaline">Adrenaline 1mg/mL</option>
+        <option value="morphine">Morphine 10mg/mL</option>
+        <option value="atropine">Atropine sulfate 1mg/mL</option>
+    </select>
+    
+    <!-- ช่องกรอกน้ำหนัก -->
+    <label for="injectionWeight">น้ำหนัก (kg):</label>
+    <input type="number" id="injectionWeight" placeholder="กรอกน้ำหนักของผู้ป่วย" required>
+    
+    <!-- ปุ่มคำนวณ -->
+    <button onclick="calculateInjectionDosage()">คำนวณ</button>
+    
+    <!-- ผลลัพธ์ -->
+    <div class="result" id="injectionResult"></div>
+</div>
+
+<script>
+    // ฟังก์ชันคำนวณขนาดยาฉีด
+    function calculateInjectionDosage() {
+        // ดึงค่าจาก input
+        const medicine = document.getElementById('injectionMedicine').value;
+        const weight = parseFloat(document.getElementById('injectionWeight').value);
+        
+        // ตรวจสอบน้ำหนัก
+        if (isNaN(weight) || weight <= 0) {
+            alert("กรุณากรอกน้ำหนักให้ถูกต้อง");
+            return;
+        }
+        
+        let dose, usageInstructions;
+        
+        // คำนวณตามยาฉีด
+        if (medicine === 'penicillin') {
+            // สูตรสำหรับ Penicillin G 10,000,000 IU
+            dose = 50 * weight; // ขนาดยา
+            usageInstructions = "IV, every 6 hours";
+        } else if (medicine === 'insulin') {
+            // สูตรสำหรับ Insulin regular 100 U/mL
+            dose = 0.5 * weight; // ขนาดยา
+            usageInstructions = "Subcutaneously, every 12 hours";
+        } else if (medicine === 'adrenaline') {
+            // สูตรสำหรับ Adrenaline 1mg/mL
+            dose = 0.01 * weight; // ขนาดยา
+            usageInstructions = "IV or IM, as needed";
+        } else if (medicine === 'morphine') {
+            // สูตรสำหรับ Morphine 10mg/mL
+            dose = 0.1 * weight; // ขนาดยา
+            usageInstructions = "IV, every 4 hours as needed";
+        } else if (medicine === 'atropine') {
+            // สูตรสำหรับ Atropine sulfate 1mg/mL
+            dose = 0.02 * weight; // ขนาดยา
+            usageInstructions = "IV, as needed for bradycardia";
+        }
+
+        // แสดงผลลัพธ์
+        document.getElementById('injectionResult').innerHTML = `
+            ขนาดยา: ${dose.toFixed(2)} mL/dose <br>
+            วิธีการใช้: ${usageInstructions}
+        `;
+    }
+</script>
+
+</body>
+</html>

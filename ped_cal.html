@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>โปรแกรมคำนวณขนาดยา</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background-color: #f4f7fc;
+            color: #333;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 30px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            background-color: #ffffff;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            text-align: center;
+            font-size: 28px;
+            margin-bottom: 20px;
+            color: #4CAF50;
+        }
+        label {
+            font-size: 18px;
+            margin-bottom: 8px;
+            display: block;
+            color: #333;
+        }
+        select, input {
+            padding: 12px;
+            width: 100%;
+            font-size: 16px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        select:focus, input:focus {
+            border-color: #4CAF50;
+            outline: none;
+        }
+        button {
+            padding: 12px 20px;
+            font-size: 16px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            display: block;
+            width: 100%;
+            transition: background-color 0.3s ease;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .result {
+            margin-top: 30px;
+            font-size: 18px;
+            font-weight: bold;
+            color: #333;
+            background-color: #f1f8e9;
+            padding: 15px;
+            border-radius: 5px;
+            text-align: center;
+        }
+
+        /* เพิ่มการจัดสไตล์สำหรับแท็บ */
+        .tabs {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+        .tabs a {
+            padding: 12px 20px;
+            text-decoration: none;
+            color: #333;
+            font-size: 18px;
+            margin: 0 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            background-color: #fff;
+            transition: background-color 0.3s;
+        }
+        .tabs a:hover {
+            background-color: #4CAF50;
+            color: white;
+        }
+        .tabs a.active {
+            background-color: #4CAF50;
+            color: white;
+            border-color: #4CAF50;
+        }
+    </style>
+</head>
+<body>
+
+<!-- แถบแท็บ -->
+<div class="tabs">
+    <a href="ped_cal.html" class="active">โปรแกรมคำนวณขนาดยา</a>
+    <a href="inj_cal.html">โปรแกรมคำนวณยาฉีด</a>
+    <a href="antidote.html">Antidote</a>
+</div>
+
+<div class="container">
+    <h1>โปรแกรมคำนวณขนาดยา</h1>
+    
+    <!-- Combo box สำหรับเลือกยา -->
+    <label for="medicine">เลือกยา:</label>
+    <select id="medicine">
+        <option value="amoxicillin">Amoxicillin syr 125mg/5mL</option>
+        <option value="cotrimoxazole">Cotrimoxazole sus. 200/40mg/5mL</option>
+        <option value="cpm">CPM 2mg/5mL</option>
+        <option value="dicloxacillin">Dicloxacillin syr 62.5mg/5mL</option>
+        <option value="erythromycin">Erythromycin estolate syr 125mg/5mL</option>
+        <option value="paracetamol">Paracetamol 120mg/5mL</option>
+    </select>
+    
+    <!-- ช่องกรอกน้ำหนัก -->
+    <label for="weight">น้ำหนัก (kg):</label>
+    <input type="number" id="weight" placeholder="กรอกน้ำหนักของผู้ป่วย" required>
+    
+    <!-- ปุ่มคำนวณ -->
+    <button onclick="calculateDosage()">คำนวณ</button>
+    
+    <!-- ผลลัพธ์ -->
+    <div class="result" id="result"></div>
+</div>
+
+<script>
+    // ฟังก์ชันคำนวณขนาดยา
+    function calculateDosage() {
+        // ดึงค่าจาก input
+        const medicine = document.getElementById('medicine').value;
+        const weight = parseFloat(document.getElementById('weight').value);
+        
+        // ตรวจสอบน้ำหนัก
+        if (isNaN(weight) || weight <= 0) {
+            alert("กรุณากรอกน้ำหนักให้ถูกต้อง");
+            return;
+        }
+        
+        let minDose, maxDose, usageInstructions;
+        
+        // คำนวณตามยา
+        if (medicine === 'paracetamol') {
+            // สูตรสำหรับ Paracetamol 120mg/5mL
+            minDose = (10 * weight) / 24; // ขนาดยาต่ำสุด
+            maxDose = (15 * weight) / 24; // ขนาดยาสูงสุด
+            usageInstructions = "PRN q 4-6 hr"; // วิธีการใช้
+        } else if (medicine === 'cpm') {
+            // สูตรสำหรับ CPM 2mg/5mL
+            minDose = (0.2916675 * weight); // ขนาดยาต่ำสุด
+            maxDose = (0.2916675 * weight); // ขนาดยาสูงสุด
+            usageInstructions = "TID PC"; // วิธีการใช้
+        } else if (medicine === 'amoxicillin') {
+            // สูตรสำหรับ Amoxicillin
+            minDose = 0.4 * weight; // ขนาดยาต่ำสุด
+            maxDose = 0.666666666666667 * weight; // ขนาดยาสูงสุด
+            usageInstructions = "TID pc"; // วิธีการใช้
+        } else if (medicine === 'cotrimoxazole') {
+            // สูตรสำหรับ Cotrimoxazole
+            minDose = 0.375 * weight; // ขนาดยาต่ำสุด
+            maxDose = 0.75 * weight; // ขนาดยาสูงสุด
+            usageInstructions = "BID pc"; // วิธีการใช้
+        } else if (medicine === 'dicloxacillin') {
+            // สูตรสำหรับ Dicloxacillin
+            minDose = 0.5 * weight; // ขนาดยาต่ำสุด
+            maxDose = 1 * weight; // ขนาดยาสูงสุด
+            usageInstructions = "QID ac"; // วิธีการใช้
+        } else if (medicine === 'erythromycin') {
+            // สูตรสำหรับ Erythromycin
+            minDose = 0.3 * weight; // ขนาดยาต่ำสุด
+            maxDose = 0.5 * weight; // ขนาดยาสูงสุด
+            usageInstructions = "QID pc"; // วิธีการใช้
+        }
+
+        // แสดงผลลัพธ์
+        document.getElementById('result').innerHTML = `
+            ขนาดยาต่ำสุด: ${minDose.toFixed(2)} mL/dose <br>
+            ขนาดยาสูงสุด: ${maxDose.toFixed(2)} mL/dose <br>
+            วิธีการใช้: ${usageInstructions}
+        `;
+    }
+</script>
+
+</body>
+</html>
